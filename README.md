@@ -40,13 +40,13 @@ Responsible for:
 ```mermaid
 flowchart LR
 
-    Client --> OrderAPI
+    Client[Client] --> OrderAPI[Order API]
 
-    OrderAPI --> OrderService
+    OrderAPI --> OrderService[Order Service]
 
-    OrderService -->|client.send()| RabbitMQ
+    OrderService -->|client.send| RabbitMQ[RabbitMQ]
 
-    RabbitMQ --> PaymentService
+    RabbitMQ --> PaymentService[Payment Service]
 
     PaymentService -->|return response| RabbitMQ
 
@@ -71,15 +71,15 @@ sequenceDiagram
 
     Client->>OrderService: POST /orders
 
-    OrderService->>RabbitMQ: send(check_payment)
+    OrderService->>RabbitMQ: send check_payment
 
     RabbitMQ->>PaymentService: Deliver message
 
     PaymentService->>PaymentService: Process payment
 
-    PaymentService->>RabbitMQ: Return payment response
+    PaymentService->>RabbitMQ: Return response
 
-    RabbitMQ->>OrderService: Response via reply queue
+    RabbitMQ->>OrderService: Response using replyTo
 
     OrderService->>Client: Return API response
 ```
@@ -321,8 +321,8 @@ docker run -d \
 --name rabbitmq \
 -p 5672:5672 \
 -p 15672:15672 \
--e RABBITMQ_DEFAULT_USER=guest \
--e RABBITMQ_DEFAULT_PASS=guest \
+-e RABBITMQ_DEFAULT_USER=user \
+-e RABBITMQ_DEFAULT_PASS=password \
 rabbitmq:3-management
 ```
 
@@ -337,8 +337,8 @@ http://localhost:15672
 Credentials:
 
 ```txt
-username: guest
-password: guest
+username: user
+password: password
 ```
 
 ---
@@ -470,40 +470,6 @@ This project helps understand:
 - `replyTo`
 - `correlationId`
 - Direct Reply-To
-
----
-
-# Git Commands
-
-Initialize repository:
-
-```bash
-git init
-```
-
-Add files:
-
-```bash
-git add .
-```
-
-Commit:
-
-```bash
-git commit -m "Add NestJS RabbitMQ RPC microservice example"
-```
-
-Add remote:
-
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/nestjs-rabbitmq-rpc.git
-```
-
-Push:
-
-```bash
-git push -u origin main
-```
 
 ---
 
